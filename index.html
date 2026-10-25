@@ -26,6 +26,7 @@
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
+    [hidden] { display: none !important; }
 
     /* Запрет прокрутки страницы */
     html, body {
@@ -270,9 +271,8 @@
     .tab[aria-selected="true"] { color: #fff; border-color: var(--accent); background: rgba(255,59,59,0.12); }
     .tab:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
     .tab-panel { display: flex; flex-direction: column; min-height: 0; }
-    .tab-panel[hidden] { display: none; }
 
-    /* Скриншот проверки */
+    /* Заголовки секций */
     .section-title {
       font-size: 13px;
       letter-spacing: 2px;
@@ -284,42 +284,41 @@
     }
     .section-title::after { content: ""; flex: 1; height: 1px; background: var(--border); }
 
-    .vt-thumb {
-      display: block;
+    /* ===== Видеоинструкция ===== */
+    .video-box {
+      position: relative;
       width: 100%;
-      padding: 0;
+      aspect-ratio: 16 / 9;
+      max-height: 32vh;
       border: 1px solid var(--border);
       background: #000;
-      cursor: zoom-in;
       overflow: hidden;
-      position: relative;
     }
-    .vt-thumb img {
-      display: block;
-      width: 100%;
-      max-height: 30vh;
-      object-fit: cover;
-      object-position: top;
-      transition: transform .3s;
-    }
-    .vt-thumb:hover img { transform: scale(1.03); }
-    .vt-thumb:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
-    .vt-thumb .hint {
+    .video-box video {
       position: absolute;
-      right: 8px;
-      bottom: 8px;
-      background: rgba(0,0,0,0.75);
-      font-size: 12px;
-      padding: 4px 8px;
-      color: #fff;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      background: #000;
+      display: block;
     }
-
-    .vt-link {
+    .video-box video:focus-visible { outline: 3px solid var(--accent); outline-offset: -3px; }
+    .video-empty {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      color: var(--muted);
       font-size: 13px;
-      color: var(--accent);
-      text-decoration: none;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      background: repeating-linear-gradient(45deg, rgba(255,255,255,0.03) 0 10px, transparent 10px 20px);
     }
-    .vt-link:hover { text-decoration: underline; }
+    .video-empty svg { width: 36px; height: 36px; color: var(--accent); }
 
     /* ===== Соцсети (3 карточки в ряд) ===== */
     .socials { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
@@ -357,33 +356,6 @@
     }
     .disclaimer b { color: var(--warn); font-weight: 600; }
 
-    /* ===== Лайтбокс (увеличенный скриншот) ===== */
-    .lightbox {
-      position: fixed;
-      inset: 0;
-      z-index: 10;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      background: rgba(0,0,0,0.88);
-      cursor: zoom-out;
-    }
-    .lightbox.open { display: flex; }
-    .lightbox img { max-width: 100%; max-height: 100%; object-fit: contain; border: 1px solid var(--border); }
-    .lightbox-close {
-      position: absolute;
-      top: 16px;
-      right: 16px;
-      width: 44px;
-      height: 44px;
-      border: 1px solid var(--border);
-      background: rgba(0,0,0,0.6);
-      color: #fff;
-      font-size: 24px;
-      cursor: pointer;
-    }
-
     /* ===== Мобильная версия ===== */
     @media (max-width: 820px) {
       .hud { inset: 8px; font-size: 10px; }
@@ -391,13 +363,13 @@
       .wrap { padding: 40px 10px 12px; }
       .panel {
         grid-template-columns: 1fr;
+        grid-template-rows: minmax(0, 1fr) auto; /* инструкция занимает остаток экрана */
         gap: 12px;
         padding: 16px;
         height: 100%;
         overflow: hidden;
       }
       .col { gap: 10px; }
-      .col.left { flex: 1; }
       .tag { font-size: 11px; letter-spacing: 2px; }
       .subtitle { font-size: 13px; }
       .btn-download { padding: 13px 18px; font-size: 16px; }
@@ -406,9 +378,8 @@
       .steps li::before { left: 10px; top: 8px; }
       .path { font-size: 11px; }
 
-      /* на телефоне скриншот — компактная строка, полный размер по нажатию */
       .col.right { gap: 8px; }
-      .vt-thumb img { max-height: 70px; }
+      .video-box { max-height: 24vh; }
       .socials { gap: 8px; }
       .social { flex-direction: row; padding: 8px 6px; font-size: 12.5px; gap: 6px; }
       .social svg { width: 20px; height: 20px; }
@@ -419,7 +390,7 @@
     @media (max-height: 640px) and (min-width: 821px) {
       .panel { padding: 18px; gap: 16px; }
       .steps li { font-size: 13px; padding: 8px 10px 8px 44px; }
-      .vt-thumb img { max-height: 20vh; }
+      .video-box { max-height: 24vh; }
     }
 
     /* Для тех, у кого в системе отключены анимации */
@@ -501,18 +472,30 @@
         </div>
       </section>
 
-      <!-- Правая колонка: проверка, соцсети, дисклеймер -->
-      <aside class="col right" data-i18n-aria="asideAria" aria-label="Проверка и сообщество">
-        <div class="section-title" data-i18n="scanTitle">Проверка kaspersky.com</div>
+      <!-- Правая колонка: видео, соцсети, дисклеймер -->
+      <aside class="col right" data-i18n-aria="asideAria" aria-label="Видео и сообщество">
+        <div class="section-title" data-i18n="videoTitle">Видеоинструкция</div>
 
-        <button class="vt-thumb" type="button" id="vtOpen" data-i18n-aria="thumbAria" aria-label="Открыть скриншот проверки Kaspersky в полном размере">
-          <img src="kaspersky.png" data-i18n-alt="thumbAlt" alt="Скриншот проверки файла на kaspersky.com: угроз не обнаружено">
-          <span class="hint" data-i18n="hint">Нажмите, чтобы увеличить</span>
-        </button>
+        <div class="video-box" id="videoBox">
+          <!-- Видео с хостинга: файл подставляется скриптом под выбранный язык -->
+          <video
+            id="guideVideo"
+            controls
+            playsinline
+            preload="metadata"
+            data-i18n-aria="videoAria"
+            aria-label="Видеоинструкция по установке карты"
+            hidden></video>
 
-        <a class="vt-link" href="https://opentip.kaspersky.com/45F4F4EADA64D29431FB04C857C29B8B2F700F5E4F2AF09C7CC6B0B5D88A8ABC/results?tab=upload" target="_blank" rel="noopener noreferrer" data-i18n="reportLink">
-          Открыть полный отчёт Kaspersky OpenTIP →
-        </a>
+          <!-- Показывается, если файл не указан или не загрузился -->
+          <div class="video-empty" id="videoEmpty">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <rect x="2" y="5" width="20" height="14" rx="2"/>
+              <path d="M10 9l5 3-5 3z" fill="currentColor"/>
+            </svg>
+            <span data-i18n="videoSoon">Видео скоро появится</span>
+          </div>
+        </div>
 
         <div class="section-title" data-i18n="community">Сообщество</div>
         <div class="socials">
@@ -529,7 +512,7 @@
           <a class="social tg" href="https://t.me/bodycam_hub" target="_blank" rel="noopener noreferrer">
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <circle cx="12" cy="12" r="12" fill="#26A5E4"/>
-              <path fill="#fff" d="M17.4 7.2c.2 0 .4.2.4.5-.2 1.9-1 6.5-1.4 8.6-.2.9-.5 1.2-.8 1.2-.7.1-1.2-.5-1.9-.9l-2.7-1.8c-1.2-.8-.4-1.2.3-1.9.2-.2 3.2-3 3.3-3.2 0 0 0-.2-.1-.2h-.2c-.1 0-1.8 1.1-5.1 3.3-.5.3-.9.5-1.3.5-.4 0-1.3-.2-1.9-.4-.8-.3-1.3-.4-1.3-.8 0-.2.3-.4.9-.7 3.5-1.5 5.8-2.5 7-3 3.3-1.4 4-1.6 4.5-1.6z"/>
+              <path fill="#fff" d="M17.4 7.2c.2 0 .4.2.4.5-.2 1.9-1 6.5-1.4 8.6-.2.9-.5 1.2-.8 1.2-.7.1-1.2-.5-1.9-.9l-2.7-1.8c-1.2-.8-.4-1.2.3-1.9.2-.2 3.2-3 3.3-3.200 0 0 0-.2-.1-.2h-.2c-.1 0-1.8 1.1-5.1 3.3-.5.3-.9.5-1.3.5-.4 0-1.3-.2-1.9-.4-.8-.3-1.3-.4-1.3-.8 0-.2.3-.4.9-.7 3.5-1.5 5.8-2.5 7-3 3.3-1.4 4-1.6 4.5-1.6z"/>
             </svg>
             <span data-i18n="tg">Telegram<small>Канал</small></span>
           </a>
@@ -560,13 +543,15 @@
     </div>
   </main>
 
-  <!-- Увеличенный скриншот -->
-  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" data-i18n-aria="lbAria" aria-label="Скриншот проверки Kaspersky">
-    <button class="lightbox-close" type="button" id="lbClose" data-i18n-aria="closeAria" aria-label="Закрыть">×</button>
-    <img src="kaspersky.png" data-i18n-alt="lbAlt" alt="Скриншот проверки файла на Kaspersky в полном размере">
-  </div>
-
   <script>
+    // ===== Файлы видеоинструкций =====
+    // Загрузи файлы на хостинг в ту же папку, что и index.html (public_html).
+    // Пустая строка — вместо видео показывается «Видео скоро появится».
+    const VIDEO = {
+      ru: 'ru_ver.mp4',
+      en: 'en_ver.mp4'
+    };
+
     // ===== Переводы =====
     // Тексты могут содержать простую разметку (<b>, <br>, <small>, <span>) — это наши собственные строки, не пользовательский ввод.
     const I18N = {
@@ -585,20 +570,15 @@
         manual2: 'В библиотеке Steam нажмите правой кнопкой мыши на Bodycam › <b>Свойства</b> › <b>Установленные файлы</b> › <b>Обзор</b>.',
         manual3: 'Перейдите в папку <span class="path">Bodycam › Content › Paks</span> и перенесите туда <b>все 3 файла</b> из скачанной папки. Чтобы удалить карту, удалите эти файлы.',
         play: 'Запустите Bodycam, в игре выберите:<br><span class="path">PLAY › HOST › PRIVATE › Team Deathmatch › Forest - Tumblewood</span><br>Друзья устанавливают эту же карту и входят в вашу приватную сессию обычным способом через Steam/игру.',
-        asideAria: 'Проверка и сообщество',
-        scanTitle: 'Проверка kaspersky.com',
-        thumbAria: 'Открыть скриншот проверки Kaspersky в полном размере',
-        thumbAlt: 'Скриншот проверки файла на kaspersky.com: угроз не обнаружено',
-        hint: 'Нажмите, чтобы увеличить',
-        reportLink: 'Открыть полный отчёт Kaspersky OpenTIP →',
+        asideAria: 'Видео и сообщество',
+        videoTitle: 'Видеоинструкция',
+        videoAria: 'Видеоинструкция по установке карты',
+        videoSoon: 'Видео скоро появится',
         community: 'Сообщество',
         vk: 'VK<small>Группа</small>',
         tg: 'Telegram<small>Канал</small>',
         reddit: 'Reddit<small>Сообщество</small>',
-        disclaimer: '<b>Тестовая сборка.</b> Добавляется только эта карта: штатные файлы игры, сохранения и настройки не изменяются, карту можно удалить в любой момент. Стабильность ещё не подтверждена, возможны вылеты. Мы не добавляли вредоносный код, но всё равно проверьте файлы антивирусом перед запуском. Скачивание добровольное, используете на свой риск.',
-        lbAria: 'Скриншот проверки Kaspersky',
-        closeAria: 'Закрыть',
-        lbAlt: 'Скриншот проверки файла на Kaspersky в полном размере'
+        disclaimer: '<b>Тестовая сборка.</b> Добавляется только эта карта: штатные файлы игры, сохранения и настройки не изменяются, карту можно удалить в любой момент. Стабильность ещё не подтверждена, возможны вылеты. Мы не добавляли вредоносный код, но всё равно проверьте файлы антивирусом перед запуском. Скачивание добровольное, используете на свой риск.'
       },
       en: {
         pageTitle: 'BODYCAM — Forest / Tumblewood Port',
@@ -615,28 +595,56 @@
         manual2: 'In your Steam library, right-click Bodycam › <b>Properties</b> › <b>Installed Files</b> › <b>Browse</b>.',
         manual3: 'Go to <span class="path">Bodycam › Content › Paks</span> and move <b>all 3 files</b> from the downloaded folder there. To remove the map, just delete these files.',
         play: 'Launch Bodycam and select in-game:<br><span class="path">PLAY › HOST › PRIVATE › Team Deathmatch › Forest - Tumblewood</span><br>Your friends install the same map and join your private session the usual way via Steam / in-game.',
-        asideAria: 'Scan results and community',
-        scanTitle: 'Kaspersky scan',
-        thumbAria: 'Open the Kaspersky scan screenshot in full size',
-        thumbAlt: 'Screenshot of the kaspersky.com file scan: no threats detected',
-        hint: 'Click to enlarge',
-        reportLink: 'Open the full Kaspersky OpenTIP report →',
+        asideAria: 'Video and community',
+        videoTitle: 'Video guide',
+        videoAria: 'Map installation video guide',
+        videoSoon: 'Video coming soon',
         community: 'Community',
         vk: 'VK<small>Group</small>',
         tg: 'Telegram<small>Channel</small>',
         reddit: 'Reddit<small>Community</small>',
-        disclaimer: '<b>Test build.</b> Only this map is added: stock game files, saves and settings are not modified, and the map can be removed at any time. Stability is not confirmed yet, crashes are possible. We did not add any malicious code, but please scan the files with an antivirus before running them. Downloading is voluntary, use at your own risk.',
-        lbAria: 'Kaspersky scan screenshot',
-        closeAria: 'Close',
-        lbAlt: 'Full-size screenshot of the Kaspersky file scan'
+        disclaimer: '<b>Test build.</b> Only this map is added: stock game files, saves and settings are not modified, and the map can be removed at any time. Stability is not confirmed yet, crashes are possible. We did not add any malicious code, but please scan the files with an antivirus before running them. Downloading is voluntary, use at your own risk.'
       }
     };
+
+    // ===== Видео под выбранный язык =====
+    const guide = document.getElementById('guideVideo');
+    const videoEmpty = document.getElementById('videoEmpty');
+
+    function showPlaceholder() {
+      guide.hidden = true;
+      videoEmpty.hidden = false;
+    }
+
+    function setVideo(lang) {
+      const src = VIDEO[lang] || '';
+      if (!src) {
+        guide.pause();
+        guide.removeAttribute('src');
+        guide.load();
+        showPlaceholder();
+        return;
+      }
+      if (guide.getAttribute('src') !== src) {
+        guide.pause();             // останавливаем видео другого языка
+        guide.src = src;
+        guide.load();
+      }
+      guide.hidden = false;
+      videoEmpty.hidden = true;
+    }
+
+    // Если файла нет на хостинге или формат не поддерживается — показываем заглушку
+    guide.addEventListener('error', () => {
+      if (guide.getAttribute('src')) showPlaceholder();
+    });
 
     const STORAGE_KEY = 'tumblewood-lang';
     const langButtons = document.querySelectorAll('.lang-switch button');
 
     function setLang(lang) {
-      const t = I18N[lang] || I18N.ru;
+      if (!I18N[lang]) lang = 'ru';
+      const t = I18N[lang];
 
       document.documentElement.lang = lang;
       document.title = t.pageTitle;
@@ -650,10 +658,8 @@
         const key = el.dataset.i18nAria;
         if (t[key] !== undefined) el.setAttribute('aria-label', t[key]);
       });
-      document.querySelectorAll('[data-i18n-alt]').forEach(el => {
-        const key = el.dataset.i18nAlt;
-        if (t[key] !== undefined) el.setAttribute('alt', t[key]);
-      });
+
+      setVideo(lang);
 
       langButtons.forEach(btn => {
         btn.setAttribute('aria-pressed', String(btn.dataset.lang === lang));
@@ -708,24 +714,12 @@
       });
     });
 
-    // ===== Лайтбокс =====
-    const lb = document.getElementById('lightbox');
-    const openBtn = document.getElementById('vtOpen');
-    const closeBtn = document.getElementById('lbClose');
-
-    function openLb() { lb.classList.add('open'); closeBtn.focus(); }
-    function closeLb() { lb.classList.remove('open'); openBtn.focus(); }
-
-    openBtn.addEventListener('click', openLb);
-    lb.addEventListener('click', closeLb);
-    document.addEventListener('keydown', e => {
-      if (e.key === 'Escape' && lb.classList.contains('open')) closeLb();
-    });
-
-    // Запрет прокрутки свайпом (кроме блока инструкции на маленьких экранах)
+    // Запрет прокрутки свайпом. Исключения: инструкция (на маленьких экранах)
+    // и видео — иначе на телефоне не получится перематывать ползунком.
     const install = document.querySelector('.install');
+    const videoBox = document.getElementById('videoBox');
     document.addEventListener('touchmove', e => {
-      if (!install.contains(e.target)) e.preventDefault();
+      if (!install.contains(e.target) && !videoBox.contains(e.target)) e.preventDefault();
     }, { passive: false });
   </script>
 </body>
