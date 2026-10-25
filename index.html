@@ -5,7 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>BODYCAM — Forest / Tumblewood Port</title>
   <meta name="description" id="metaDesc" content="Скачать портированную карту Forest / Tumblewood для Bodycam. Инструкция по установке.">
-    <!-- Значок сайта -->
+
+  <!-- Значок сайта -->
   <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -247,6 +248,30 @@
       color: var(--accent);
     }
 
+    /* ===== Варианты установки (вкладки) ===== */
+    .install { display: flex; flex-direction: column; gap: 10px; min-height: 0; flex: 1; }
+    .tabs { display: flex; gap: 6px; }
+    .tab {
+      flex: 1;
+      min-height: 40px;
+      padding: 8px 10px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.04);
+      color: var(--muted);
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: border-color .2s, color .2s, background .2s;
+    }
+    .tab:hover { color: #fff; }
+    .tab[aria-selected="true"] { color: #fff; border-color: var(--accent); background: rgba(255,59,59,0.12); }
+    .tab:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+    .tab-panel { display: flex; flex-direction: column; min-height: 0; }
+    .tab-panel[hidden] { display: none; }
+
     /* Скриншот проверки */
     .section-title {
       font-size: 13px;
@@ -376,6 +401,7 @@
       .tag { font-size: 11px; letter-spacing: 2px; }
       .subtitle { font-size: 13px; }
       .btn-download { padding: 13px 18px; font-size: 16px; }
+      .tab { min-height: 36px; font-size: 11.5px; padding: 6px 8px; }
       .steps li { font-size: 12.5px; padding: 8px 10px 8px 40px; }
       .steps li::before { left: 10px; top: 8px; }
       .path { font-size: 11px; }
@@ -447,14 +473,32 @@
           </a>
         </div>
 
-        <ol class="steps" data-i18n-aria="stepsAria" aria-label="Инструкция по установке">
-          <li data-i18n="step1">Распакуйте <b>ВЕСЬ ZIP</b> в обычную папку (не запускайте EXE внутри архива).</li>
-          <li data-i18n="step2">Закройте Bodycam. Запустите <b>Tumblewood-Setup.exe</b> и подтвердите запрос Windows. Установка начнётся сама. Дождитесь сообщения <b>«Карта установлена»</b>.</li>
-          <li data-i18n="step3">Запустите Bodycam через Steam:<br>
-            <span class="path">PLAY › HOST › PRIVATE › Team Deathmatch › Forest - Tumblewood</span><br>
-            Друзья устанавливают этот же архив и входят в вашу приватную сессию обычным способом через Steam/игру.
-          </li>
-        </ol>
+        <!-- Способы установки -->
+        <div class="install">
+          <div class="tabs" role="tablist" data-i18n-aria="tabsAria" aria-label="Способ установки">
+            <button class="tab" type="button" role="tab" id="tab-auto" aria-controls="panel-auto" aria-selected="true" data-i18n="tabAuto">Установщик</button>
+            <button class="tab" type="button" role="tab" id="tab-manual" aria-controls="panel-manual" aria-selected="false" tabindex="-1" data-i18n="tabManual">Вручную</button>
+          </div>
+
+          <!-- Вариант 1: Setup.exe -->
+          <div class="tab-panel" id="panel-auto" role="tabpanel" aria-labelledby="tab-auto">
+            <ol class="steps">
+              <li data-i18n="auto1">Закройте Bodycam. Скачайте <b>ZIP-архив</b> и распакуйте его в любую удобную папку (не запускайте EXE прямо из архива).</li>
+              <li data-i18n="auto2">Откройте папку и запустите <b>Setup.exe</b>. Подтвердите запрос Windows и дождитесь окончания установки.</li>
+              <li data-i18n="play">Запустите Bodycam, в игре выберите:<br><span class="path">PLAY › HOST › PRIVATE › Team Deathmatch › Forest - Tumblewood</span><br>Друзья устанавливают эту же карту и входят в вашу приватную сессию обычным способом через Steam/игру.</li>
+            </ol>
+          </div>
+
+          <!-- Вариант 2: вручную в папку Paks -->
+          <div class="tab-panel" id="panel-manual" role="tabpanel" aria-labelledby="tab-manual" hidden>
+            <ol class="steps">
+              <li data-i18n="manual1">Закройте Bodycam. Скачайте <b>ZIP-архив</b> и распакуйте его в любую удобную папку.</li>
+              <li data-i18n="manual2">В библиотеке Steam нажмите правой кнопкой мыши на Bodycam › <b>Свойства</b> › <b>Установленные файлы</b> › <b>Обзор</b>.</li>
+              <li data-i18n="manual3">Перейдите в папку <span class="path">Bodycam › Content › Paks</span> и перенесите туда <b>все 3 файла</b> из скачанной папки. Чтобы удалить карту, удалите эти файлы.</li>
+              <li data-i18n="play">Запустите Bodycam, в игре выберите:<br><span class="path">PLAY › HOST › PRIVATE › Team Deathmatch › Forest - Tumblewood</span><br>Друзья устанавливают эту же карту и входят в вашу приватную сессию обычным способом через Steam/игру.</li>
+            </ol>
+          </div>
+        </div>
       </section>
 
       <!-- Правая колонка: проверка, соцсети, дисклеймер -->
@@ -476,7 +520,7 @@
           <a class="social vk" href="https://vk.ru/bodycam_hub" target="_blank" rel="noopener noreferrer">
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <rect width="24" height="24" rx="6" fill="#0077FF"/>
-              <path fill="#fff" d="M12.8 17C7.3 17 4.2 13.3 4.1 7h2.8c.1 4.6 2.1 6.5 3.7 6.9V7h2.6v4c1.6-.2 3.3-2 3.8-4h2.6c-.4 2.4-2.2 4.2-3.4 4.9 1.300.6 3.300 2.100 4.100 5.100h-2.900c-.6-1.900-2.200-3.400-4.200-3.600V17h-.4z"/>
+              <path fill="#fff" d="M12.8 17C7.3 17 4.2 13.3 4.1 7h2.8c.1 4.6 2.1 6.5 3.7 6.9V7h2.6v4c1.6-.2 3.3-2 3.8-4h2.6c-.4 2.4-2.2 4.2-3.4 4.9 1.3.6 3.3 2.1 4.1 5.1h-2.9c-.6-1.9-2.2-3.4-4.2-3.6V17h-.4z"/>
             </svg>
             <span data-i18n="vk">VK<small>Группа</small></span>
           </a>
@@ -485,7 +529,7 @@
           <a class="social tg" href="https://t.me/bodycam_hub" target="_blank" rel="noopener noreferrer">
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <circle cx="12" cy="12" r="12" fill="#26A5E4"/>
-              <path fill="#fff" d="M17.4 7.2c.2 0 .4.2.4.5-.2 1.900-1 6.500-1.400 8.600-.2.900-.5 1.200-.8 1.200-.7.100-1.200-.5-1.900-.9l-2.700-1.800c-1.200-.8-.4-1.200.3-1.900.2-.2 3.200-3 3.300-3.200 0 0 0-.2-.1-.2h-.2c-.1 0-1.800 1.100-5.100 3.300-.5.300-.9.500-1.300.5-.4 0-1.300-.2-1.900-.4-.8-.3-1.300-.4-1.300-.8 0-.2.300-.4.900-.7 3.500-1.500 5.800-2.500 7-3 3.300-1.400 4-1.600 4.500-1.600z"/>
+              <path fill="#fff" d="M17.4 7.2c.2 0 .4.2.4.5-.2 1.9-1 6.5-1.4 8.6-.2.9-.5 1.2-.8 1.2-.7.1-1.2-.5-1.9-.9l-2.7-1.8c-1.2-.8-.4-1.2.3-1.9.2-.2 3.2-3 3.3-3.2 0 0 0-.2-.1-.2h-.2c-.1 0-1.8 1.1-5.1 3.3-.5.3-.9.5-1.3.5-.4 0-1.3-.2-1.9-.4-.8-.3-1.3-.4-1.3-.8 0-.2.3-.4.9-.7 3.5-1.5 5.8-2.5 7-3 3.3-1.4 4-1.6 4.5-1.6z"/>
             </svg>
             <span data-i18n="tg">Telegram<small>Канал</small></span>
           </a>
@@ -494,14 +538,14 @@
           <a class="social reddit" href="https://www.reddit.com/user/dausher672/" target="_blank" rel="noopener noreferrer">
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <circle cx="12" cy="12" r="12" fill="#FF4500"/>
-              <path d="M12 9.8l1-4.300 3.200.6" stroke="#fff" stroke-width=".9" fill="none" stroke-linecap="round"/>
+              <path d="M12 9.8l1-4.3 3.2.6" stroke="#fff" stroke-width=".9" fill="none" stroke-linecap="round"/>
               <circle cx="16.4" cy="6.2" r="1.2" fill="#fff"/>
               <circle cx="6.5" cy="11" r="1.5" fill="#fff"/>
               <circle cx="17.5" cy="11" r="1.5" fill="#fff"/>
-              <ellipse cx="12" cy="14.2" rx="6.3" ry="4.300" fill="#fff"/>
+              <ellipse cx="12" cy="14.2" rx="6.3" ry="4.3" fill="#fff"/>
               <circle cx="9.6" cy="13.5" r="1" fill="#FF4500"/>
               <circle cx="14.4" cy="13.5" r="1" fill="#FF4500"/>
-              <path d="M9.700 16.100c1.400.9 3.200.9 4.600 0" stroke="#FF4500" stroke-width=".9" fill="none" stroke-linecap="round"/>
+              <path d="M9.7 16.1c1.4.9 3.2.9 4.6 0" stroke="#FF4500" stroke-width=".9" fill="none" stroke-linecap="round"/>
             </svg>
             <span data-i18n="reddit">Reddit<small>Сообщество</small></span>
           </a>
@@ -509,7 +553,7 @@
 
         <!-- Дисклеймер -->
         <p class="disclaimer" data-i18n="disclaimer">
-          <b>Тестовая сборка.</b> Добавляется только эта карта: штатные файлы игры, сохранения и настройки не изменяются, карту можно отключить через установщик. Стабильность ещё не подтверждена, возможны вылеты. Мы не добавляли вредоносный код, но всё равно проверьте файлы антивирусом перед запуском. Скачивание добровольное, используете на свой риск.
+          <b>Тестовая сборка.</b> Добавляется только эта карта: штатные файлы игры, сохранения и настройки не изменяются, карту можно удалить в любой момент. Стабильность ещё не подтверждена, возможны вылеты. Мы не добавляли вредоносный код, но всё равно проверьте файлы антивирусом перед запуском. Скачивание добровольное, используете на свой риск.
         </p>
       </aside>
 
@@ -524,7 +568,7 @@
 
   <script>
     // ===== Переводы =====
-    // Тексты могут содержать простую разметку (<b>, <br>, <small>) — это наши собственные строки, не пользовательский ввод.
+    // Тексты могут содержать простую разметку (<b>, <br>, <small>, <span>) — это наши собственные строки, не пользовательский ввод.
     const I18N = {
       ru: {
         pageTitle: 'BODYCAM — Forest / Tumblewood Port',
@@ -532,10 +576,15 @@
         langAria: 'Язык',
         subtitle: 'Портированная версия карты для приватных матчей Bodycam.',
         download: 'Скачать карту',
-        stepsAria: 'Инструкция по установке',
-        step1: 'Распакуйте <b>ВЕСЬ ZIP</b> в обычную папку (не запускайте EXE внутри архива).',
-        step2: 'Закройте Bodycam. Запустите <b>Tumblewood-Setup.exe</b> и подтвердите запрос Windows. Установка начнётся сама. Дождитесь сообщения <b>«Карта установлена»</b>.',
-        step3: 'Запустите Bodycam через Steam:<br><span class="path">PLAY › HOST › PRIVATE › Team Deathmatch › Forest - Tumblewood</span><br>Друзья устанавливают этот же архив и входят в вашу приватную сессию обычным способом через Steam/игру.',
+        tabsAria: 'Способ установки',
+        tabAuto: 'Установщик',
+        tabManual: 'Вручную',
+        auto1: 'Закройте Bodycam. Скачайте <b>ZIP-архив</b> и распакуйте его в любую удобную папку (не запускайте EXE прямо из архива).',
+        auto2: 'Откройте папку и запустите <b>Setup.exe</b>. Подтвердите запрос Windows и дождитесь окончания установки.',
+        manual1: 'Закройте Bodycam. Скачайте <b>ZIP-архив</b> и распакуйте его в любую удобную папку.',
+        manual2: 'В библиотеке Steam нажмите правой кнопкой мыши на Bodycam › <b>Свойства</b> › <b>Установленные файлы</b> › <b>Обзор</b>.',
+        manual3: 'Перейдите в папку <span class="path">Bodycam › Content › Paks</span> и перенесите туда <b>все 3 файла</b> из скачанной папки. Чтобы удалить карту, удалите эти файлы.',
+        play: 'Запустите Bodycam, в игре выберите:<br><span class="path">PLAY › HOST › PRIVATE › Team Deathmatch › Forest - Tumblewood</span><br>Друзья устанавливают эту же карту и входят в вашу приватную сессию обычным способом через Steam/игру.',
         asideAria: 'Проверка и сообщество',
         scanTitle: 'Проверка kaspersky.com',
         thumbAria: 'Открыть скриншот проверки Kaspersky в полном размере',
@@ -546,7 +595,7 @@
         vk: 'VK<small>Группа</small>',
         tg: 'Telegram<small>Канал</small>',
         reddit: 'Reddit<small>Сообщество</small>',
-        disclaimer: '<b>Тестовая сборка.</b> Добавляется только эта карта: штатные файлы игры, сохранения и настройки не изменяются, карту можно отключить через установщик. Стабильность ещё не подтверждена, возможны вылеты. Мы не добавляли вредоносный код, но всё равно проверьте файлы антивирусом перед запуском. Скачивание добровольное, используете на свой риск.',
+        disclaimer: '<b>Тестовая сборка.</b> Добавляется только эта карта: штатные файлы игры, сохранения и настройки не изменяются, карту можно удалить в любой момент. Стабильность ещё не подтверждена, возможны вылеты. Мы не добавляли вредоносный код, но всё равно проверьте файлы антивирусом перед запуском. Скачивание добровольное, используете на свой риск.',
         lbAria: 'Скриншот проверки Kaspersky',
         closeAria: 'Закрыть',
         lbAlt: 'Скриншот проверки файла на Kaspersky в полном размере'
@@ -557,10 +606,15 @@
         langAria: 'Language',
         subtitle: 'A ported version of the map for private Bodycam matches.',
         download: 'Download map',
-        stepsAria: 'Installation guide',
-        step1: 'Extract the <b>ENTIRE ZIP</b> into a regular folder (do not run the EXE from inside the archive).',
-        step2: 'Close Bodycam. Run <b>Tumblewood-Setup.exe</b> and confirm the Windows prompt. Installation starts automatically. Wait for the <b>«Карта установлена»</b> (Map installed) message.',
-        step3: 'Launch Bodycam via Steam:<br><span class="path">PLAY › HOST › PRIVATE › Team Deathmatch › Forest - Tumblewood</span><br>Your friends install the same archive and join your private session the usual way via Steam / in-game.',
+        tabsAria: 'Installation method',
+        tabAuto: 'Installer',
+        tabManual: 'Manual',
+        auto1: 'Close Bodycam. Download the <b>ZIP archive</b> and extract it to any folder (do not run the EXE from inside the archive).',
+        auto2: 'Open the folder and run <b>Setup.exe</b>. Confirm the Windows prompt and wait for the installation to finish.',
+        manual1: 'Close Bodycam. Download the <b>ZIP archive</b> and extract it to any folder.',
+        manual2: 'In your Steam library, right-click Bodycam › <b>Properties</b> › <b>Installed Files</b> › <b>Browse</b>.',
+        manual3: 'Go to <span class="path">Bodycam › Content › Paks</span> and move <b>all 3 files</b> from the downloaded folder there. To remove the map, just delete these files.',
+        play: 'Launch Bodycam and select in-game:<br><span class="path">PLAY › HOST › PRIVATE › Team Deathmatch › Forest - Tumblewood</span><br>Your friends install the same map and join your private session the usual way via Steam / in-game.',
         asideAria: 'Scan results and community',
         scanTitle: 'Kaspersky scan',
         thumbAria: 'Open the Kaspersky scan screenshot in full size',
@@ -571,7 +625,7 @@
         vk: 'VK<small>Group</small>',
         tg: 'Telegram<small>Channel</small>',
         reddit: 'Reddit<small>Community</small>',
-        disclaimer: '<b>Test build.</b> Only this map is added: stock game files, saves and settings are not modified, and the map can be disabled via the installer. Stability is not confirmed yet, crashes are possible. We did not add any malicious code, but please scan the files with an antivirus before running them. Downloading is voluntary, use at your own risk.',
+        disclaimer: '<b>Test build.</b> Only this map is added: stock game files, saves and settings are not modified, and the map can be removed at any time. Stability is not confirmed yet, crashes are possible. We did not add any malicious code, but please scan the files with an antivirus before running them. Downloading is voluntary, use at your own risk.',
         lbAria: 'Kaspersky scan screenshot',
         closeAria: 'Close',
         lbAlt: 'Full-size screenshot of the Kaspersky file scan'
@@ -633,6 +687,27 @@
     tick();
     setInterval(tick, 1000);
 
+    // ===== Вкладки способов установки =====
+    const tabs = document.querySelectorAll('.tab');
+    function selectTab(tab) {
+      tabs.forEach(t => {
+        const on = t === tab;
+        t.setAttribute('aria-selected', String(on));
+        t.tabIndex = on ? 0 : -1;
+        document.getElementById(t.getAttribute('aria-controls')).hidden = !on;
+      });
+    }
+    tabs.forEach((tab, i) => {
+      tab.addEventListener('click', () => selectTab(tab));
+      // переключение стрелками с клавиатуры
+      tab.addEventListener('keydown', e => {
+        if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+        const next = tabs[(i + (e.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length];
+        selectTab(next);
+        next.focus();
+      });
+    });
+
     // ===== Лайтбокс =====
     const lb = document.getElementById('lightbox');
     const openBtn = document.getElementById('vtOpen');
@@ -648,9 +723,9 @@
     });
 
     // Запрет прокрутки свайпом (кроме блока инструкции на маленьких экранах)
-    const steps = document.querySelector('.steps');
+    const install = document.querySelector('.install');
     document.addEventListener('touchmove', e => {
-      if (!steps.contains(e.target)) e.preventDefault();
+      if (!install.contains(e.target)) e.preventDefault();
     }, { passive: false });
   </script>
 </body>
